@@ -1,0 +1,8 @@
+c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer\bin\Debug\BypassServer.exe.config
+c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer\obj\Debug\BypassServer.csprojResolveAssemblyReference.cache
+c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer\bin\Debug\BypassServer.exe
+c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer\bin\Debug\BypassServer.pdb
+c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer\bin\Debug\Newtonsoft.Json.dll
+c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer\bin\Debug\Newtonsoft.Json.xml
+c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer\obj\Debug\BypassServer.exe
+c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer\obj\Debug\BypassServer.pdb
