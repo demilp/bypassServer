@@ -75,7 +75,14 @@ namespace BypassServer
                     BypassClient[] receivers = Filter(receivedData.ids, receivedData.tag);
                     for (int i = 0; i < receivers.Length; i++)
                     {
-                        receivers[i].WriteLine(receivedData.data + Program.delimitador);
+                        if (receivers[i].needSender)
+                        {
+                            receivers[i].WriteLine("bypassServer" + clients[i].senderSeparator + receivedData.data);
+                        }
+                        else
+                        {
+                            receivers[i].WriteLine(receivedData.data);
+                        }
                     }
                     return true;
                 }
@@ -83,7 +90,14 @@ namespace BypassServer
                 {
                     for (int i = 0; i < clients.Count; i++)
                     {
-                        clients[i].WriteLine(receivedData.data);
+                        if (clients[i].needSender)
+                        {
+                            clients[i].WriteLine("bypassServer" + clients[i].senderSeparator + receivedData.data);
+                        }
+                        else
+                        {
+                            clients[i].WriteLine(receivedData.data);
+                        }
                     }
                     return true;
                 }
@@ -136,7 +150,14 @@ namespace BypassServer
                     BypassClient[] receivers = Filter(receivedData.ids, receivedData.tag);
                     for (int i = 0; i < receivers.Length; i++)
                     {
-                        receivers[i].WriteLine(receivedData.data + Program.delimitador);
+                        if (receivers[i].needSender)
+                        {
+                            receivers[i].WriteLine(((BypassClient)connection).identifier + clients[i].senderSeparator + receivedData.data);
+                        }
+                        else
+                        {
+                            receivers[i].WriteLine(receivedData.data);
+                        }
                     }
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     if (receivedData.ids == null || receivedData.ids.Length == 0)
@@ -150,13 +171,31 @@ namespace BypassServer
                     Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.Gray;
                 }
+                else if (receivedData.type == "needSender")
+                {
+                    
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    ((BypassClient)connection).needSender = true;
+                    ((BypassClient)connection).senderSeparator = receivedData.data;
+                    Console.WriteLine(((BypassClient)connection).identifier + " needs sender id, with separator "+ receivedData.data);
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
                 else if (receivedData.type == "broadcast")
                 {
                     for (int i = 0; i < clients.Count; i++)
                     {
                         if(clients[i] != connection)
                         {
-                            clients[i].WriteLine(receivedData.data);
+                            if (clients[i].needSender)
+                            {
+                                clients[i].WriteLine(((BypassClient)connection).identifier + clients[i].senderSeparator + receivedData.data);
+                            }
+                            else
+                            {
+                                clients[i].WriteLine(receivedData.data);
+                            }
+                            
                         }
                     }
                     Console.ForegroundColor = ConsoleColor.Blue;
@@ -168,7 +207,14 @@ namespace BypassServer
                 {
                     for (int i = 0; i < clients.Count; i++)
                     {
-                        clients[i].WriteLine(receivedData.data);
+                        if (clients[i].needSender)
+                        {
+                            clients[i].WriteLine(((BypassClient)connection).identifier + clients[i].senderSeparator + receivedData.data);
+                        }
+                        else
+                        {
+                            clients[i].WriteLine(receivedData.data);
+                        }
                     }
                     Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine(((BypassClient)connection).identifier + " broadcasted \"" + receivedData.data + "\"");
