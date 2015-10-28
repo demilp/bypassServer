@@ -13,35 +13,17 @@ namespace BypassServer
         public string[] ids;
         public string data;
 
-        public enum Types { REGISTER, SEND, BROADCAST, BROADCAST_ALL, STATUS }
-        public BypassData(Types types, string data, string tag, string[] ids = null)
-            : this()
+        public BypassData(string types, string data, string tag, JSONArray ids) : this()
         {
-            ids = null;
-            switch (types)
-            {
-                case Types.REGISTER:
-                    type = "register";
-                    break;
-                case Types.SEND:
-                    type = "send";
-                    break;
-                case Types.BROADCAST:
-                    type = "broadcast";
-                    break;
-                case Types.BROADCAST_ALL:
-                    type = "broadcastAll";
-                    break;
-                case Types.STATUS:
-                    type = "status";
-                    break;
-                default:
-                    type = "";
-                    break;
-            }
+            Console.WriteLine(ids);
+            this.type = types;
             this.data = data;
             this.tag = tag;
-            this.ids = ids;
+            this.ids = new string[ids.Count];
+            for (int i = 0; i < ids.Count; i++)
+            {
+                this.ids[i] = ids[i].Value;
+            }
         }
         public string ToJson()
         {

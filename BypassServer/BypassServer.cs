@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿//using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -68,7 +68,8 @@ namespace BypassServer
         {
             try
             {
-                BypassData receivedData = JsonConvert.DeserializeObject<BypassData>(data);
+                JSONNode node = JSONNode.Parse(data);
+                BypassData receivedData = new BypassData(node["type"].Value, node["data"].Value, node["tag"].Value, node["ids"].AsArray);
 
                 if (receivedData.type == "send")
                 {
@@ -122,8 +123,10 @@ namespace BypassServer
         {
             base.DataArrived(connection, data);
             try
-            {                
-                BypassData receivedData = JsonConvert.DeserializeObject<BypassData>(data);
+            {
+                JSONNode node = JSONNode.Parse(data);
+                //sConsole.WriteLine(node["ids"].Count);
+                BypassData receivedData = new BypassData(node["type"].Value, node["data"].Value, node["tag"].Value, node["ids"].AsArray);
 
                 BypassClient client = (BypassClient) connection;
                 if (receivedData.type == "register")
@@ -246,10 +249,6 @@ namespace BypassServer
                     Console.ForegroundColor = ConsoleColor.Gray;
                 }
                 AddMessage(client.identifier, data);
-            }
-            catch (JsonSerializationException e)
-            {
-
             }
             catch (Exception e)
             {

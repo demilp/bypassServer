@@ -13,3 +13,4 @@ C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\
 C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\bin\Release\Newtonsoft.Json.xml
 C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\obj\Release\BypassServer.exe
 C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\obj\Release\BypassServer.pdb
+C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\obj\Release\BypassServer.csprojResolveAssemblyReference.cache
