@@ -1,5 +1,4 @@
-﻿//using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -319,33 +318,31 @@ namespace BypassServer
 
         private string GetStatus()
         {
-            string s = "{\"status\":[";
+            JSONClass json = new JSONClass();
+            JSONArray status = new JSONArray();
+            
 
             for (int i = 0; i < clients.Count; i++)
             {
-                s += clients[i].ToJsonObject();
-                if(i != clients.Count -1)
-                {
-                    s += ",";
-                }
+                status.Add(clients[i].ToJsonObject());
             }
-            s += "], \"lastMessages\":[";
+            json.Add("status", status);
+            JSONArray lastMessages = new JSONArray();
+            
             if (debugMode)
             {
+                
                 for (int i = 0; i < messages.Length; i++)
                 {
-                    s += "\"" + messages[(messagesIndex+i) % messages.Length] + "\"";
-                    if (i != messages.Length)
+                    if (messages[(messagesIndex + i) % messages.Length] != null)
                     {
-                        s += ",";
+                        lastMessages.Add(messages[(messagesIndex + i) % messages.Length]);
                     }
+                    
                 }
             }
-            else
-            {
-                s += "\"debug mode off\"";
-            }
-            return s+"]}";
+            json.Add("lastMessages", lastMessages);
+            return json.ToString();
         }
     }
 

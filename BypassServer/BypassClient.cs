@@ -21,9 +21,15 @@ namespace BypassServer
         {
 
         }
-        public string ToJsonObject()
+        public JSONClass ToJsonObject()
         {
-            if (tags != null)
+            JSONClass json = new JSONClass();
+            json["id"] = identifier;
+            json["tag"] = ConcatTags();
+            json["number"] = id.ToString();
+            json["ip"] = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
+            return json;
+            /*if (tags != null)
             {
                 string s = "{";
                 s += "\"id\":\"" + identifier + "\",";
@@ -42,18 +48,21 @@ namespace BypassServer
                 s += "\"ip\":\"" + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString() + "\"";
                 s += "}";
                 return s;
-            }
+            }*/
             
         }
         public string ConcatTags()
         {
             string s = "";
-            for (int i = 0; i < tags.Length; i++)
+            if (tags != null)
             {
-                s += tags[i];
-                if (i < tags.Length-1)
+                for (int i = 0; i < tags.Length; i++)
                 {
-                    s += "|";
+                    s += tags[i];
+                    if (i < tags.Length - 1)
+                    {
+                        s += "|";
+                    }
                 }
             }
             return s;
