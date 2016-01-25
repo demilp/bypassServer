@@ -14,7 +14,7 @@ namespace BypassServer
         public string identifier = "";
         public string[] tags;
         public bool needSender;
-        public string senderSeparator;
+        public string senderSeparator = "";
 
         public BypassClient(TcpClient client)
             : base(client, Program.delimitador)

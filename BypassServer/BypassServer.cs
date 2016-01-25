@@ -154,7 +154,7 @@ namespace BypassServer
                     {
                         if (receivers[i].needSender)
                         {
-                            receivers[i].WriteLine(((BypassClient)connection).identifier + clients[i].senderSeparator + receivedData.data);
+                            receivers[i].WriteLine(((BypassClient)connection).identifier + receivers[i].senderSeparator + receivedData.data);
                         }
                         else
                         {

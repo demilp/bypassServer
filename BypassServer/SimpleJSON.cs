@@ -964,7 +964,6 @@ namespace BypassServer
             {
                 if (result.Length > 2)
                     result += ", ";
-                Console.WriteLine(N.Value.ToString());
                 result += "\"" + Escape(N.Key) + "\":" + N.Value.ToString();
             }
             result += "}";
