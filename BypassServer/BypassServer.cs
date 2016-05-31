@@ -258,6 +258,7 @@ namespace BypassServer
             }
 
         }
+
         protected override TcpConnection connectionFactory(System.Net.Sockets.TcpClient client)
         {
             return new BypassClient(client);

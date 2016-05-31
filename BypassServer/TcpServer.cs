@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 using System.Net;
+//using log4net;
 
 namespace TcpGenericServerNET
 {
@@ -18,6 +19,7 @@ namespace TcpGenericServerNET
 
         public string delimiter { get; protected set; }
         public Dictionary<int, TcpConnection> connections { get; protected set; }
+        ////private static log4net.ILog logger = null;
 
         protected static volatile int workerThreadCount = 0;
         protected static object workerThreadCountLock = new object();
@@ -25,7 +27,9 @@ namespace TcpGenericServerNET
 
         static TcpServer()
         {
-
+            /*if (!log4net.LogManager.GetRepository().Configured)
+                log4net.Config.XmlConfigurator.Configure();
+            logger = log4net.LogManager.GetLogger(typeof(TcpServer));*/
         }
 
         /// <summary>
@@ -111,7 +115,7 @@ namespace TcpGenericServerNET
                 }
                 catch (Exception ex)
                 {
-                    // logger.Error("Error aceptando conexion", ex);
+                    //logger.Error("Error aceptando conexion", ex);
                 }
             }
         }
@@ -178,7 +182,11 @@ namespace TcpGenericServerNET
                 TcpConnection conn = (TcpConnection)ar.AsyncState;
                 int bytesReceived = conn.client.Client.EndReceive(ar);
                 conn.buffTop += bytesReceived;
-                Debug.Assert(conn.buffTop < conn.buff.Length);
+                //Debug.Assert(conn.buffTop < conn.buff.Length);
+                if (conn.buffTop >= conn.buff.Length)
+                {
+                    Array.Resize(ref conn.buff, conn.buffTop + 1);
+                }
                 if (conn.abort || !conn.client.Connected || bytesReceived == 0)
                 {
                     closeConnection(conn);
@@ -218,7 +226,6 @@ namespace TcpGenericServerNET
         {
             try
             {
-                conn.aborted = true;
                 removeConnection(conn);
                 ShutdownConnection(conn);
                 this.ClientDisconnected(conn);
@@ -226,7 +233,7 @@ namespace TcpGenericServerNET
             }
             catch (Exception ex)
             {
-                // logger.Error("Error cerrando conexión", ex);
+                //logger.Error("Error cerrando conexión", ex);
                 //throw;
             }
         }
@@ -247,20 +254,6 @@ namespace TcpGenericServerNET
             catch (Exception) { }
         }
 
-        public TcpConnection[] ConnectedConnections()
-        {
-            foreach (var item in connections)
-            {
-                item.Value.WriteLine("");
-                if (!item.Value.client.Connected)
-                {
-                    connections.Remove(item.Key);
-                }
-            }
-            TcpConnection[] c = new TcpConnection[connections.Count];
-            connections.Values.CopyTo(c, 0);
-            return c;
-        }
 
         /// <summary>
         /// Deja de escuhar, cierra todas las conexiones y libera recursos
@@ -295,7 +288,20 @@ namespace TcpGenericServerNET
             Dispose(false);
         }
 
-
+        public TcpConnection[] ConnectedConnections()
+        {
+            foreach (var item in connections)
+            {
+                item.Value.WriteLine("");
+                if (!item.Value.client.Connected)
+                {
+                    connections.Remove(item.Key);
+                }
+            }
+            TcpConnection[] c = new TcpConnection[connections.Count];
+            connections.Values.CopyTo(c, 0);
+            return c;
+        }
         /// <summary>
         /// Sobrecargar este metodo para manejar el arribo de datos.
         /// El server maneja streams orientados a texto, y este metodo es llamado por cada linea de texto recibida

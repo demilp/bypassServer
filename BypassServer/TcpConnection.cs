@@ -27,13 +27,13 @@ namespace TcpGenericServerNET
         public int buffTop = 0;
         public string delimiter { get; protected set; }
         protected byte[] delimiterArr = null;
-        public Thread workerThread { get; protected set; }
         public Encoding encoding { get; protected set; }
+        //private static log4net.ILog logger = null;
         public volatile bool abort = false;
-        public volatile bool aborted = false;
 
         static TcpConnection()
         {
+            //logger = log4net.LogManager.GetLogger(typeof(TcpConnection));
         }
 
         public TcpConnection(TcpClient client)
@@ -60,7 +60,6 @@ namespace TcpGenericServerNET
             this.encoding = encoding ?? Encoding.UTF8;
             this.delimiter = string.IsNullOrEmpty(delimiter) ? "\r\n" : delimiter;
             this.delimiterArr = encoding.GetBytes(this.delimiter);
-            this.workerThread = workerThread;
             this.client = client;
             this.stream = client.GetStream();
             this.reader = new StreamReader(client.GetStream());
@@ -97,7 +96,7 @@ namespace TcpGenericServerNET
         public virtual string ReadFromBuffer(int bytesReceived)
         {
             if (buffPos == buffTop) return null;
-            int pos = buff.LocateFirst(delimiterArr,buffPos,buffTop-buffPos);
+            int pos = buff.LocateFirst(delimiterArr, buffPos, buffTop - buffPos);
             if (pos < 0)
             {
                 return null;
@@ -158,7 +157,7 @@ namespace TcpGenericServerNET
 
         public virtual void ConnectionError(string msg, Exception ex)
         {
-
+            //logger.Error(msg, ex);
         }
 
 
@@ -215,7 +214,7 @@ namespace TcpGenericServerNET
 
         public virtual void WriteFile(string fullPath)
         {
-            FileStream file = new FileStream(fullPath,FileMode.Open,FileAccess.Read);
+            FileStream file = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
             byte[] buff = new byte[65536];
             try
             {
@@ -245,20 +244,6 @@ namespace TcpGenericServerNET
             if (disposing)
             {
                 abort = true;
-                if (!aborted && this.workerThread != null)
-                {
-                    Thread.Sleep(100);
-                    if (!aborted && this.workerThread != null)
-                    {
-                        Thread.Sleep(1000);
-                        if (!aborted && this.workerThread != null)
-                        {
-                            try { this.workerThread.Abort(); }
-                            catch { }
-                            aborted = true;
-                        }
-                    }
-                }
                 if (this.client != null) { try { this.client.Close(); } catch { } }
             }
         }
