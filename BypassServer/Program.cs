@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace BypassServer
 {
     public class Program
@@ -24,6 +23,7 @@ namespace BypassServer
             }
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Server initialized");
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine();
             string s;
             do
@@ -42,13 +42,13 @@ namespace BypassServer
                         server.ActivateDebugMode(false);
                     }
                 }
-                else if (!server.DataArrived(s))
+                /*else if (!server.DataArrived(s))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Invalid command");
                     Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.Gray;
-                }
+                }*/
 
             } while (s != "exit");
             server.Dispose();

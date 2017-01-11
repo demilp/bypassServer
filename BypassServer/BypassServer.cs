@@ -10,6 +10,7 @@ namespace BypassServer
 {
     public class BypassServer : TcpServer
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(BypassServer));
         public List<BypassClient> clients;
         private bool debugMode;
         private string[] messages;
@@ -47,22 +48,32 @@ namespace BypassServer
         {
             base.ClientConnected(connection);
             clients.Add((BypassClient)connection);
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("Client connected");
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Gray;
+            if (debugMode)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.WriteLine("Client connected");
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+            Log("Client connected", "BypassServer", "BypassServer");
             AddMessage("Server", "Client connected");
         }
         public override void ClientDisconnected(TcpConnection connection)
         {
             base.ClientDisconnected(connection);
             clients.Remove((BypassClient)connection);
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine("Client "+ ((BypassClient)connection).identifier +" disconnected");
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Gray;
+            if (debugMode)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("Client " + ((BypassClient) connection).identifier + " disconnected");
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
             AddMessage("Server", "Client \"" + ((BypassClient)connection).identifier + "\" disconnected");
+            Log("Client disconnected", ((BypassClient)connection).identifier==""? "(non-registered)" : ((BypassClient)connection).identifier, "BypassServer");
         }
+
+        /*
         public bool DataArrived(string data)
         {
             try
@@ -108,6 +119,8 @@ namespace BypassServer
                 return false;
             }
         }
+        */
+
         public void AddMessage(string senderId, string message)
         {
             if(debugMode)
@@ -132,19 +145,31 @@ namespace BypassServer
                 {
                     client.identifier = receivedData.data;
                     client.tags = receivedData.tag.Split('|');
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    
                     if (client.ConcatTags() != "")
                     {
-                        
-                        Console.WriteLine("Id " + client.identifier + " registered with tags " + client.ConcatTags());
-                        
+                        string conc = client.ConcatTags();
+                        if (debugMode)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("Id " + client.identifier + " registered with tags " + conc);
+                            Console.WriteLine();
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                        }
+                        Log("Registed with tags " + conc, ((BypassClient)connection).identifier, "BypassServer");
                     }
                     else
                     {
-                        Console.WriteLine("Id " + client.identifier);
+                        if (debugMode)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("Id " + client.identifier);
+                            Console.WriteLine();
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                        }
+                        Log("Registed", ((BypassClient)connection).identifier, "BypassServer");
                     }
-                    Console.WriteLine();
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    
                 }
 
                 else if (receivedData.type == "send")
@@ -161,27 +186,49 @@ namespace BypassServer
                             receivers[i].WriteLine(receivedData.data);
                         }
                     }
-                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    
                     if (receivedData.ids == null || receivedData.ids.Length == 0)
                     {
-                        Console.WriteLine(((BypassClient) connection).identifier + " sent \"" + receivedData.data + "\" to clients with tags " + receivedData.tag);
+                        if (debugMode)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.WriteLine(((BypassClient) connection).identifier + " sent \"" + receivedData.data +
+                                              "\" to clients with tags " + receivedData.tag);
+                            Console.WriteLine();
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                        }
+                        Log(receivedData.data, ((BypassClient)connection).identifier, "tag "+ receivedData.tag);
                     }
                     else
                     {
-                        Console.WriteLine(((BypassClient)connection).identifier + " sent \"" + receivedData.data + "\" to " + ContatArray(receivedData.ids));
+                        string ids = ContatArray(receivedData.ids);
+                        if (debugMode)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.WriteLine(((BypassClient) connection).identifier + " sent \"" + receivedData.data +
+                                              "\" to " + ids);
+                            Console.WriteLine();
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                        }
+                        Log(receivedData.data, ((BypassClient)connection).identifier, ids);
                     }
-                    Console.WriteLine();
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    
                 }
                 else if (receivedData.type == "needSender")
                 {
                     
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    
                     ((BypassClient)connection).needSender = true;
                     ((BypassClient)connection).senderSeparator = receivedData.data;
-                    Console.WriteLine(((BypassClient)connection).identifier + " needs sender id, with separator "+ receivedData.data);
-                    Console.WriteLine();
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    if (debugMode)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine(((BypassClient) connection).identifier + " needs sender id, with separator " +
+                                          receivedData.data);
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
+                    Log("Needs sender id with separator "+ receivedData.data, ((BypassClient)connection).identifier, "BypassServer");
                 }
                 else if (receivedData.type == "broadcast")
                 {
@@ -200,10 +247,15 @@ namespace BypassServer
                             
                         }
                     }
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine(((BypassClient) connection).identifier + " broadcasted \""+ receivedData.data +"\"");
-                    Console.WriteLine();
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    if (debugMode)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.WriteLine(((BypassClient) connection).identifier + " broadcasted \"" + receivedData.data +
+                                          "\"");
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
+                    Log(receivedData.data, ((BypassClient)connection).identifier, "Broadcast");
                 }
                 else if (receivedData.type == "broadcastAll")
                 {
@@ -218,10 +270,15 @@ namespace BypassServer
                             clients[i].WriteLine(receivedData.data);
                         }
                     }
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine(((BypassClient)connection).identifier + " broadcasted \"" + receivedData.data + "\"");
-                    Console.WriteLine();
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    if (debugMode)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.WriteLine(((BypassClient) connection).identifier + " broadcasted \"" + receivedData.data +
+                                          "\"");
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
+                    Log(receivedData.data, ((BypassClient)connection).identifier, "BroadcastAll");
                 }
                 else if (receivedData.type == "status")
                 {
@@ -242,19 +299,25 @@ namespace BypassServer
                         }
                     }
                     connection.WriteLine(GetStatus());
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.WriteLine("Status update requested by " + ((BypassClient)connection).identifier);
-                    Console.WriteLine();
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    if (debugMode)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine("Status update requested by " + ((BypassClient) connection).identifier);
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
+                    Log("Status update requested", ((BypassClient)connection).identifier, "BypassServer");
                 }
                 AddMessage(client.identifier, data);
             }
             catch (Exception e)
             {
+
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(e.Message);
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Gray;
+                Log(e.Message, "BypassServer", "Error");
             }
 
         }
@@ -345,8 +408,17 @@ namespace BypassServer
             json.Add("lastMessages", lastMessages);
             return json.ToString();
         }
+        void Log(string message, string sender, string receiver)
+        {
+            //logger.Info(new {Message=message, Sender=sender, Receiver=receiver, DateTime=DateTime.Now});
+            log4net.ThreadContext.Properties["receiver"] = receiver;
+            log4net.ThreadContext.Properties["sender"] = sender;
+            //log4net.ThreadContext.Properties["dateTime"] = DateTime.Now.to;
+            logger.Info(message);
+
+        }
     }
 
-    
+ 
 
 }

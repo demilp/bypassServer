@@ -19,7 +19,7 @@ namespace BypassServer
         public BypassClient(TcpClient client)
             : base(client, Program.delimitador)
         {
-
+            tags = new string[0];
         }
         public JSONClass ToJsonObject()
         {
