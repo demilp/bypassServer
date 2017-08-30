@@ -6,3 +6,12 @@ c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer
 c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer\bin\Debug\Newtonsoft.Json.xml
 c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer\obj\Debug\BypassServer.exe
 c:\users\demianl\documents\visual studio 2013\Projects\BypassServer\BypassServer\obj\Debug\BypassServer.pdb
+C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\bin\Debug\BypassServer.exe.config
+C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\bin\Debug\BypassServer.exe
+C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\bin\Debug\BypassServer.pdb
+C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\bin\Debug\log4net.dll
+C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\bin\Debug\log4net.Ext.Json.dll
+C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\bin\Debug\log4net.xml
+C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\obj\Debug\BypassServer.csprojResolveAssemblyReference.cache
+C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\obj\Debug\BypassServer.exe
+C:\Users\Demian\Documents\Visual Studio 2015\Projects\BypassServer\BypassServer\obj\Debug\BypassServer.pdb
