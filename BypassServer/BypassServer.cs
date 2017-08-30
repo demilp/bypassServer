@@ -65,11 +65,11 @@ namespace BypassServer
             if (debugMode)
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine("Client " + ((BypassClient) connection).identifier + " disconnected");
+                Console.WriteLine("Client " + ((BypassClient)connection).identifier == "" ? "(non-registered)" : ((BypassClient)connection).identifier + " disconnected");
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
-            AddMessage("Server", "Client \"" + ((BypassClient)connection).identifier + "\" disconnected");
+            AddMessage("Server", "Client \"" + ((BypassClient)connection).identifier == "" ? "(non-registered)" : ((BypassClient)connection).identifier + "\" disconnected");
             Log("Client disconnected", ((BypassClient)connection).identifier==""? "(non-registered)" : ((BypassClient)connection).identifier, "BypassServer");
         }
 
